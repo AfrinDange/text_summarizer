@@ -67,7 +67,7 @@ for i in range(len(sentence_tokens)):
         try:
             word_em += tfidf.iloc[i][word]*model.wv[word]
         except KeyError:
-            print("KeyError: ", word)
+            pass
     if len(sentences[i].split()) == 0:
         word_em = 0
         empty_vecs.append(i)
@@ -110,6 +110,6 @@ summary = "".join(summary)
 #to_server = {}
 #to_server['summary'] = summary
 
-print(json.dumps(summary))
+print(summary)
 sys.stdout.flush()
 sys.exit()

@@ -10,4 +10,4 @@ scores = scorer.score(human_summary, computer_summary)
 
 for key, val in scores.items():
     scores[key] = str(val)
-print(json.dumps(scores))
+print(scores)

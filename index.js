@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const {spawn} = require('child_process');
+const {spawnSync, spawn} = require('child_process');
 const app = express();
 const port = 3000
 
@@ -18,68 +18,44 @@ app.get('/', (req, res) => {
 
 app.post('/get-summary', (req,res) => {
     //child process to call the python script
-    const summarizer = spawn('python', 
-            ['summarizer.py', req.body.text]);
+    const summarizer = spawnSync('python', ['summarizer.py', req.body.text]);
 
-    summarizer.stdout.on('data', (data) => {
-        dataToSend = data.toString();
-    })
-
-    summarizer.stderr.on('data', (data) => {
-        console.log('stderr: ' + data.toString());
-    })
-
-    summarizer.on('close', (code) => {
-        console.log(`Summary process closed all stdio with code ${code}`);
+    if(summarizer.status == 0) {
+        const dataToSend = summarizer.stdout.toString();
+        if(summarizer.stderr) console.warn(summarizer.stderr);
+        console.log("Summary Process exited with code 0");
         res.render('summary.html', {text: req.body.text, summary: dataToSend});
-        //res.send("Original text: " + req.body.text + "\nSummary: " + dataToSend);
-    })
+    } else {
+        res.send("ERROR! TRY AGAIN!");
+    }
 })
 
 app.get('/evaluate-model', (req, res) => {
     res.render('model_eval.html', {scores: ""});
 })
 
-app.post('/evaluate-model', (req, res) => {
-    //generate summary
-    var computer_summ;
+app.post('/evaluation-results', (req, res) => {
+    //generate summary        
+    const summarizer = spawnSync('python', ['summarizer.py', req.body.text]);
 
-    
-    console.log("Original text: " + req.body.text);
-    const summarizer = spawn('python', ['summarizer.py', req.body.text]);
+    if(summarizer.status == 0) {
+        const computer_summ = summarizer.stdout.toString();
+        if(summarizer.stderr) console.warn(summarizer.stderr);
 
-    summarizer.stdout.on('data', (data) => {
-        computer_summ = data.toString();
-    })
+        //evaluate model
+        const model_eval = spawnSync('python', ['model_eval.py', req.body.human_summ, computer_summ]);
 
-    
-    summarizer.stderr.on('data', (data) => {
-        console.log('stderr: ' + data.toString());
-    })
-    
-    summarizer.on('close', (code) => {
-        console.log(`Summary process closed all stdio with code ${code}`);
-    })
+        if(model_eval.status == 0) {
+            const metrics = model_eval.stdout.toString();
+            if(model_eval.stderr) console.warn(model_eval.stderr);
+            console.log("Evaluation process exited with code 0");
+            res.render('model_eval.html', {scores: metrics});
+        }
+    } 
+})
 
-    //evaluate model
-    console.log("human summary: " + req.body.human_summ + "\n\n\nComputer SUmmary: " + computer_summ);
-    
-    const model_eval = spawn('python', ['model_eval.py', req.body.human_summ, computer_summ]);
-
-
-    model_eval.stdout.on('data', (data) => {
-        scores = data.toString();
-    })
-
-    model_eval.stderr.on('data', (data) => {
-        console.log('stderr: ' + data.toString());
-    })
-
-    model_eval.on('close', (code) => {
-        console.log(`Evaluation process closed all stdio with code ${code}`);
-        console.log(scores);
-        res.render('model_eval.html', {scores: scores});
-    })
+app.get("*", (req, res) => {
+    res.send("404 ERROR. PAGE NOT FOUND!")
 })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
