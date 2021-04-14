@@ -22,7 +22,7 @@ app.post('/get-summary', (req,res) => {
 
     if(summarizer.status == 0) {
         const dataToSend = summarizer.stdout.toString();
-        if(summarizer.stderr) console.warn(summarizer.stderr);
+        if(summarizer.stderr.toString() != "") console.error("ERROR in Summary Process: ", summarizer.stderr.toString());
         console.log("Summary Process exited with code 0");
         res.render('summary.html', {text: req.body.text, summary: dataToSend});
     } else {
@@ -31,25 +31,26 @@ app.post('/get-summary', (req,res) => {
 })
 
 app.get('/evaluate-model', (req, res) => {
-    res.render('model_eval.html', {scores: ""});
+    res.render('model_eval.html', {metrics: null});
 })
 
 app.post('/evaluation-results', (req, res) => {
     //generate summary        
     const summarizer = spawnSync('python', ['summarizer.py', req.body.text]);
-
+    if(summarizer.stderr.toString() != "") console.error("ERROR in Summary Process: ..", summarizer.stderr.toString(), "..");
     if(summarizer.status == 0) {
         const computer_summ = summarizer.stdout.toString();
-        if(summarizer.stderr) console.warn(summarizer.stderr);
+        
 
         //evaluate model
         const model_eval = spawnSync('python', ['model_eval.py', req.body.human_summ, computer_summ]);
-
+        if(model_eval.stderr.toString() != "") console.error("ERROR in Evaluation Process: ", model_eval.stderr.toString());
         if(model_eval.status == 0) {
-            const metrics = model_eval.stdout.toString();
-            if(model_eval.stderr) console.warn(model_eval.stderr);
+            const metrics = JSON.parse(model_eval.stdout.toString());
             console.log("Evaluation process exited with code 0");
-            res.render('model_eval.html', {scores: metrics});
+            res.render('model_eval.html', {metrics: metrics});
+        } else {
+            res.send("ERROR! TRY AGAIN!");
         }
     } 
 })
@@ -58,4 +59,4 @@ app.get("*", (req, res) => {
     res.send("404 ERROR. PAGE NOT FOUND!")
 })
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.listen(port, () => console.log(`App listening on port ${port}!`));

@@ -13,9 +13,32 @@
         <input type="submit" value="Evaluate">
     </form>
 
-    <% if (scores != "") { %>
-        <p><%=scores%></p>
+    <% if(metrics) { %>
+        <div>
+            <h2>Human Summary: </h2>
+            <p> <%=metrics.humanSumm%> </p>
+            <h2>Computer Summary: </h2>
+            <p> <%=metrics.compSumm%> </p>
+            <table>
+                <tr>
+                    <th>Metric Used</th>
+                    <th>Precision</th>
+                    <th>Recall</th>
+                    <th>Fmeasure</th>
+                </tr>
+            <% for(let metric in metrics.scores) { %>
+                <tr>
+                    <th> <%=metric%> </th>
+                <% for(let val of metrics.scores[metric]) { %>
+                    <td> <%=val%> </td>
+                <% } %>  
+                </tr>   
+            <% } %> 
+            </table>
+        </div>
     <% } %>
+
+
 
 </body>
 </html>
