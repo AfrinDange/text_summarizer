@@ -61,7 +61,7 @@ tfidf = pd.DataFrame(scores, columns=feature_names)
 
 #generating keywords
 from sklearn.feature_extraction.text import CountVectorizer
-counter = CountVectorizer(ngram_range = (2,3))
+counter = CountVectorizer(ngram_range = (1,3))
 counts = counter.fit_transform(sent_for_keywords)
 kwords = counter.get_feature_names()
 count_scores = counts.todense().tolist()
@@ -70,7 +70,8 @@ tfs = pd.DataFrame(count_scores, columns=kwords)
 to_server['keywords'] = tfs.sum(axis=0).nlargest(10).keys().tolist()
 
 #creating wordcloud from text
-wordcloud = WordCloud(stopwords=stopwords.words('english'), max_font_size=50, max_words=100, background_color="white").generate(text)
+wordcloud = WordCloud(stopwords=stopwords.words('english'), colormap="Dark2", width=400, height=300,
+        max_font_size=50, max_words=100, background_color="white").generate(text)
 wordcloud.to_file("public/wordcloud.png")
 
 
