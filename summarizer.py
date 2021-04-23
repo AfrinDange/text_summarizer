@@ -115,7 +115,9 @@ try:
     #%matplotlib notebook
     fig = plt.figure()
     axes = plt.axes(projection='3d')
-    axes.scatter(x,y,z, c=clusters, cmap='Accent', linewidth=1)
+    scatter = axes.scatter(x,y,z, c=clusters, cmap="Accent", linewidth=1)
+    legend = axes.legend(*scatter.legend_elements(), title="Classes", loc="upper right", bbox_to_anchor=(0, 0.8))
+    axes.add_artist(legend)
 
 except IndexError:
     pass
@@ -150,7 +152,10 @@ for i in sent_idx:
 summary = "".join(summary)
 
 to_server['summary'] = summary
-
+sent_cluster = {}
+for i, sent in enumerate(nltk.sent_tokenize(text)):
+    sent_cluster[sent] = str(clusters[i])   
+to_server['clusters'] = sent_cluster
 print(json.dumps(to_server))
 sys.stdout.flush()
 sys.exit()
