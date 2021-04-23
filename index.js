@@ -19,12 +19,12 @@ app.get('/', (req, res) => {
 app.post('/get-summary', (req,res) => {
     //child process to call the python script
     const summarizer = spawnSync('python', ['summarizer.py', req.body.text]);
-
+    if(summarizer.stderr.toString() != "") console.error("ERROR in Summary Process: ", summarizer.stderr.toString());
     if(summarizer.status == 0) {
-        const dataToSend = summarizer.stdout.toString();
-        if(summarizer.stderr.toString() != "") console.error("ERROR in Summary Process: ", summarizer.stderr.toString());
+        const dataToSend = JSON.parse(summarizer.stdout.toString());
+        dataToSend['text'] = req.body.text;
         console.log("Summary Process exited with code 0");
-        res.render('summary.html', {text: req.body.text, summary: dataToSend});
+        res.render('summary.html', {report: dataToSend});
     } else {
         res.send("ERROR! TRY AGAIN!");
     }
