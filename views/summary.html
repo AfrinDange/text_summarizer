@@ -50,11 +50,11 @@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
         </button>
-        <h4 class="text-center w-75 fw-bold hide">Text Summarizer</h4>
+        <h4 class="text-center w-75 ms-5 fw-bold hide">Text Summarizer</h4>
     </div>
     </nav>
     <div class="p-5">
-        <div class="d-flex row">
+        <div class="d-flex row pb-5">
             <div class="col-10">
                 <h3 class="fw-bold">Original Text</h3>
                 <p class="lead fs-6"> <%=report.text%> </p>
@@ -63,12 +63,12 @@
                 <h5>Keywords</h5>
                 <ul class="list-group list-group-flush">
                     <% for(let word of report.keywords) { %>
-                        <li class="list-group-item"> <%=word%> </li>
+                        <li class="list-group-item fw-bolder"> <%=word%> </li>
                     <% } %>
                 </ul>
             </div>
         </div>
-        <div class="d-flex row">
+        <div class="d-flex row pb-5">
             <div class="col-7">
                 <h3 class="fw-bold">Summary</h3>
                 <p class="lead fs-6"> <%=report.summary%> </p>
@@ -77,8 +77,26 @@
                 <img class="" src="wordcloud.png" alt="wordcloud">
             </div>
         </div>
-        <h3 class="fw-bold">Visualization of Clusters</h3>
-        <img class="window-img" src="cluster_viz.png" alt="cluster_viz">
+        <div class="jumbotron">
+            <h3 class="fw-bold">Visualization of Clusters</h3>
+            <img class="window-img" src="cluster_viz.png" alt="cluster_viz">
+        </div>
+        <div class="jumbotron p=3">
+            <h3 class="fw-bold">Cluster Assignments</h3>
+            <table class="table table-hover">
+                <tr>
+                    <th>Sentence</th>
+                    <th>Cluster Assigned</th>
+                </tr>        
+                <% for(let [sent, cluster] of Object.entries(report.clusters)) { %>
+                <tr>
+                    <td> <%=sent%></td>
+                    <td> <%=cluster%> </td>
+                </tr>
+                <% } %>
+            </table>
+
+        </div>
     </div>
     <!--Bootstrap-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>    
