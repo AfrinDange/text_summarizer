@@ -39,14 +39,15 @@ app.post('/evaluation-results', (req, res) => {
     const summarizer = spawnSync('python', ['summarizer.py', req.body.text]);
     if(summarizer.stderr.toString() != "") console.error("ERROR in Summary Process: ..", summarizer.stderr.toString(), "..");
     if(summarizer.status == 0) {
-        const computer_summ = summarizer.stdout.toString();
+        var computer_summ = JSON.parse(summarizer.stdout.toString());
+        computer_summ = computer_summ['summary']
         
-
         //evaluate model
         const model_eval = spawnSync('python', ['model_eval.py', req.body.human_summ, computer_summ]);
         if(model_eval.stderr.toString() != "") console.error("ERROR in Evaluation Process: ", model_eval.stderr.toString());
         if(model_eval.status == 0) {
             const metrics = JSON.parse(model_eval.stdout.toString());
+            metrics['text'] = req.body.text;
             console.log("Evaluation process exited with code 0");
             res.render('model_eval.html', {metrics: metrics});
         } else {
