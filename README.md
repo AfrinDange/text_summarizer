@@ -11,9 +11,8 @@
     `pip install nltk sklearn scipy numpy pandas gensim contractions pillow wordcloud matplotlib`
 2. Open a python interpreter and run:
 
-    `import nltk
-    
-    nltk.download()`
+    ```import nltk
+    nltk.download()```
     
     Download all content.
     
