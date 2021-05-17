@@ -1,4 +1,4 @@
-# text_summarizer
+# Text Summarizer
 ###### An Extractive Text Summarizer Using NLP and Clustering
 
 
@@ -9,6 +9,7 @@
 1. Install all python libraries using pip install 
 
     `pip install nltk sklearn scipy numpy pandas gensim contractions pillow wordcloud matplotlib`
+    
 2. Open a python interpreter and run:
 
     ```python
@@ -20,18 +21,18 @@
     
 3. Go to project directory
 
-4. run the following command if using conda environment
+4. Run the following command if using conda environment
     
     `conda activate environment_name`
   
-    replace environment_name with the environment in which all libraries are installed.
+    Replace environment_name with the environment in which all libraries are installed.
   
-5. run `npm install`
+5. Run `npm install`
 
-6. run `nodemon index.js`
+6. Run `nodemon index.js`
 
 
-7. goto http://localhost:3000/
+7. Go to http://localhost:3000/
 
 Voila! Now you can summarize text!
 
