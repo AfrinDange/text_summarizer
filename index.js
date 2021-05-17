@@ -56,8 +56,12 @@ app.post('/evaluation-results', (req, res) => {
     } 
 })
 
+app.get("/summary-report", (req, res) => {
+    res.redirect("https://colab.research.google.com/drive/1UlN7F9BZRQuV_DrGvUFC9wGw3AYl08Za?usp=sharing");
+})
+
 app.get("*", (req, res) => {
-    res.send("404 ERROR. PAGE NOT FOUND!")
+    res.send("<h1>404 ERROR. PAGE NOT FOUND!</h1>")
 })
 
 app.listen(port, () => console.log(`App listening on port ${port}!`));

@@ -52,7 +52,7 @@ for i in range(len(sentences)):
 sentence_tokens = sentences
 
 #generating TF-IDF scores
-vectorizer = TfidfVectorizer(use_idf=True, ngram_range = (1,3))
+vectorizer = TfidfVectorizer(use_idf=True)
 vectors = vectorizer.fit_transform(sentence_tokens)
 feature_names = vectorizer.get_feature_names()
 scores = vectors.todense().tolist()
@@ -60,7 +60,6 @@ scores = vectors.todense().tolist()
 tfidf = pd.DataFrame(scores, columns=feature_names)
 
 #generating keywords
-from sklearn.feature_extraction.text import CountVectorizer
 counter = CountVectorizer(ngram_range = (1,3))
 counts = counter.fit_transform(sent_for_keywords)
 kwords = counter.get_feature_names()
@@ -149,7 +148,7 @@ sent_idx = sorted(set(sent_idx))
 summary = []
 for i in sent_idx:
     summary.append(sentences[i])
-summary = "".join(summary)
+summary = "  ".join(summary)
 
 to_server['summary'] = summary
 sent_cluster = {}
